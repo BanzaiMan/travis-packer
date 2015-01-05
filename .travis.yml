@@ -9,8 +9,8 @@ rvm:
 
 script:
   - pushd $HOME/build/BanzaiMan
-  - git clone --depth=1 https://github.com/opscode/bento.git
-  - git clone --depth=1 https://github.com/travis-ci/travis-cookbooks.git
+  - git clone --depth=1 -q https://github.com/opscode/bento.git
+  - git clone --depth=1 -q https://github.com/travis-ci/travis-cookbooks.git
   - popd
   - bundle exec ./generate | tee ubuntu-12.04-amd64-travis.json
   - diff ubuntu-12.04-amd64-travis.json tests/ubuntu-12.04-amd64-travis.json
