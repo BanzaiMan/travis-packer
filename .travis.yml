@@ -1,0 +1,16 @@
+language: ruby
+
+sudo: false
+
+rvm:
+  - 1.9.3
+  - '2.1'
+  - '2.2'
+
+script:
+  - pushd $HOME
+  - git --depth=1 clone https://github.com/opscode/bento.git
+  - git --depth=1 clone https://github.com/travis-ci/travis-cookbooks.git
+  - popd
+  - bundle exec ./generate | tee ubuntu-12.04-amd64-travis.json
+  - diff ubuntu-12.04-amd64-travis.json tests/ubuntu-12.04-amd64-travis.json
