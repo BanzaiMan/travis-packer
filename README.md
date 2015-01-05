@@ -16,6 +16,7 @@ This repository contains a useful script to make it easier to provision a VM for
 2. [Vagrant](https://www.vagrantup.com/)
 3. At least one of:
 
+
   a. [VirtualBox](https://www.virtualbox.org/)
   b. [VMWare Fusion](http://www.vmware.com/products/fusion) (for OS X) or [VMWare Workstation](http://www.vmware.com/products/workstation) (for Windows and Linux)
   c. [Parallels Desktop](http://www.parallels.com/products/desktop/) (for OS X)
