@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'yaml'
+require 'active_support'
+
+ubuntu_release = ARGV[0] || '12.04'
+
+input_file  = "../bento/packer/ubuntu-#{ubuntu_release}-amd64-travis.json.in"
+output_file = "../bento/packer/ubuntu-#{ubuntu_release}-amd64-travis.json"
+
+def modify_preseed(release, string_before, string_after)
+  src  = "../bento/packer/http/ubuntu-#{release}/preseed.cfg"
+  sink = "../bento/packer/http/ubuntu-#{release}/preseed-travis.cfg"
+
+  replace_all(src, sink, "^d-i passwd(.*)#{string_before}$", "d-i passwd\\1#{string_after}")
+end
+
+## Given src and sink, apply a series of transformations given by args
+## args should be an array of even number of strings, where
+## each pair constitutes a pattern and a replacement
+def replace_all(src, sink, *args)
+  if File.exist? sink
+    File.unlink sink
+  end
+
+  File.read(src).each_line do |l|
+    line = l
+    args.each_slice(2) do |pair|
+      line.gsub!(Regexp.new(pair[0]), pair[1])
+    end
+    File.write(sink, line, mode: 'a+')
+  end
+end
+
+modify_preseed(ubuntu_release, 'vagrant', 'travis')
+
+replace_all('../bento/packer/scripts/common/vagrant.sh', '../bento/packer/scripts/common/travis.sh', '([ ~])vagrant', '\1travis')
+replace_all('../bento/packer/scripts/common/vmtools.sh', '../bento/packer/scripts/common/vmtools-travis.sh', 'vagrant', 'travis')
+
+## Note that transformation is strictly textual.
+## While the JSON data are structured, the structure is not amenable to changes
+## required for our use
+replace_all("../bento/packer/ubuntu-#{ubuntu_release}-amd64.json", input_file,
+  "(get_hostname=|echo '|ssh_(password|username)\": \"|common/)vagrant", '\1travis',           # user name, password and hostname
+  "provisionerless",                                                     "latest",             # Chef version
+  "vmtools\.sh",                                                         "vmtools-travis.sh",  # VMWare tools file
+  "preseed.cfg",                                                         "preseed-travis.cfg", # Ubuntu preseed config
+  "\"384\"",                                                             "\"2048\"",           # memory usage
+  "^(\s*)(\"numvcpus\": )?\"1\"",                                        '\1\2"2"',            # VCPU setting
+  'opscode_',                                                            'travis_',            # output file name
+)
+
+json = JSON.load(File.read(File.join(File.dirname(__FILE__), input_file)))
+
+yaml_common   = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'travis-cookbooks', 'vm_templates', 'common', 'standard.yml'))
+yaml_standard = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'travis-cookbooks', 'vm_templates', 'standard', 'standard.yml'))
+
+travis_provisioner = {
+  'type'           => 'chef-solo',
+  'cookbook_paths' => [ "../../travis-cookbooks/ci_environment" ],
+  'json'           => ( yaml_common['json']    || {} ).deep_merge( yaml_standard['json']    || {} ).merge({'system_info' => {'cookbooks_sha' => `cd ../travis-cookbooks; git show-ref refs/heads/master -s`.chomp}}),
+  'run_list'       => ( yaml_common['recipes'] || [] ).concat(     yaml_standard['recipes'] || [] )
+}
+
+json['provisioners'] << travis_provisioner
+
+puts JSON.pretty_generate(json)
