@@ -8,7 +8,7 @@ rvm:
   - '2.2'
 
 script:
-  - pushd $HOME
+  - pushd $HOME/build/BanzaiMan
   - git clone --depth=1 https://github.com/opscode/bento.git
   - git clone --depth=1 https://github.com/travis-ci/travis-cookbooks.git
   - popd
