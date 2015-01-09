@@ -31,6 +31,12 @@ or [Parallels Desktop](http://www.parallels.com/products/desktop/) (for OS X).
   `bundle exec ./generate > ../bento/packer/ubuntu-12.04-amd64-travis.json`
 
 1. Move to `../bento/packer`.
+1. It seems that in the first packer build, the `system_info` cookbook
+   appears to hang.
+   It should be removed from the JSON template.
+
+  `vi ubuntu-12.04-amd64-travis.json`
+
 1. Build the base "standard" image. This could take a while, depending on the resources available to the VM.
 
   `packer build -parallel=false [-only=vmware-iso] ubuntu-12.04-amd64-travis.json`
