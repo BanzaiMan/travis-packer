@@ -67,7 +67,9 @@ You can also pass `-only` flag to limit boxes to build.
 By default, `./generate` reads definitions given by Bento's Ubuntu 12.04 on x86_64 (i.e., amd64) template.
 It has also been tested for use with Ubuntu 14.04. You can generate this with:
 
-  ./generate 14.04
+```
+./generate 14.04
+```
 
 You can then develop cookbooks for Travis CI's next generation images.
 
