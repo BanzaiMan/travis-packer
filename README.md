@@ -26,11 +26,11 @@ or [Parallels Desktop](http://www.parallels.com/products/desktop/) (for OS X).
 
   `bundle install`
 
-1. Run `bundle exec ./generate`. This prints to STDOUT the JSON document that is suitable for use by Packer. Save it in `../bento/packer`:
+1. Run `bundle exec ./generate`. This prints to STDOUT the JSON document that is suitable for use by Packer. Save it in `../bento`:
 
-  `bundle exec ./generate > ../bento/packer/ubuntu-12.04-amd64-travis.json`
+  `bundle exec ./generate > ../bento/ubuntu-12.04-amd64-travis.json`
 
-1. Move to `../bento/packer`.
+1. Move to `../bento`.
 1. It seems that in the first packer build, the `system_info` cookbook
    appears to hang.
    It should be removed from the JSON template.
