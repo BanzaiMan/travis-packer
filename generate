@@ -6,12 +6,12 @@ require 'active_support'
 
 ubuntu_release = ARGV[0] || '12.04'
 
-input_file  = "../bento/packer/ubuntu-#{ubuntu_release}-amd64-travis.json.in"
-output_file = "../bento/packer/ubuntu-#{ubuntu_release}-amd64-travis.json"
+input_file  = "../bento/ubuntu-#{ubuntu_release}-amd64-travis.json.in"
+output_file = "../bento/ubuntu-#{ubuntu_release}-amd64-travis.json"
 
 def modify_preseed(release, string_before, string_after)
-  src  = "../bento/packer/http/ubuntu-#{release}/preseed.cfg"
-  sink = "../bento/packer/http/ubuntu-#{release}/preseed-travis.cfg"
+  src  = "../bento/http/ubuntu-#{release}/preseed.cfg"
+  sink = "../bento/http/ubuntu-#{release}/preseed-travis.cfg"
 
   replace_all(src, sink, "^d-i passwd(.*)#{string_before}$", "d-i passwd\\1#{string_after}")
 end
@@ -35,13 +35,13 @@ end
 
 modify_preseed(ubuntu_release, 'vagrant', 'travis')
 
-replace_all('../bento/packer/scripts/common/vagrant.sh', '../bento/packer/scripts/common/travis.sh', '([ ~])vagrant', '\1travis')
-replace_all('../bento/packer/scripts/common/vmtools.sh', '../bento/packer/scripts/common/vmtools-travis.sh', 'vagrant', 'travis')
+replace_all('../bento/scripts/common/vagrant.sh', '../bento/scripts/common/travis.sh', '([ ~])vagrant', '\1travis')
+replace_all('../bento/scripts/common/vmtools.sh', '../bento/scripts/common/vmtools-travis.sh', 'vagrant', 'travis')
 
 ## Note that transformation is strictly textual.
 ## While the JSON data are structured, the structure is not amenable to changes
 ## required for our use
-replace_all("../bento/packer/ubuntu-#{ubuntu_release}-amd64.json", input_file,
+replace_all("../bento/ubuntu-#{ubuntu_release}-amd64.json", input_file,
   "(get_hostname=|echo '|ssh_(password|username)\": \"|common/)vagrant", '\1travis',           # user name, password and hostname
   "provisionerless",                                                     "latest",             # Chef version
   "vmtools\.sh",                                                         "vmtools-travis.sh",  # VMWare tools file
@@ -58,7 +58,7 @@ yaml_standard = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'travis-c
 
 travis_provisioner = {
   'type'           => 'chef-solo',
-  'cookbook_paths' => [ "../../travis-cookbooks/ci_environment" ],
+  'cookbook_paths' => [ "../travis-cookbooks/ci_environment" ],
   'json'           => ( yaml_common['json']    || {} ).deep_merge( yaml_standard['json']    || {} ).merge({'system_info' => {'cookbooks_sha' => `cd ../travis-cookbooks; git show-ref refs/heads/master -s`.chomp}}),
   'run_list'       => ( yaml_common['recipes'] || [] ).concat(     yaml_standard['recipes'] || [] )
 }
