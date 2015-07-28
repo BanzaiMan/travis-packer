@@ -20,7 +20,7 @@ or [Parallels Desktop](http://www.parallels.com/products/desktop/) (for OS X).
 
 ## Usage
 
-1. Clone this, [`bento`](https://github.com/opscode/bento) and `travis-cookbooks` in the same directory.
+1. Clone this, [`bento`](https://github.com/chef/bento) and `travis-cookbooks` in the same directory.
 1. Change directory to `travis-packer`.
 1. Install Active Support:
 
