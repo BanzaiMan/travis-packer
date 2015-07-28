@@ -43,7 +43,7 @@ or [Parallels Desktop](http://www.parallels.com/products/desktop/) (for OS X).
 
 1. Add the resulting Vagrant box as `travis-precise`:
 
-  `vagrant box add --name travis-precise ../builds/vmware/travis_ubuntu-12.04_chef-latest.box`
+  `vagrant box add --name travis-precise builds/vmware/travis_ubuntu-12.04_chef-latest.box`
 
 1. In the `travis-cookbooks` directory, run the rest of language-specific cookbooks:
 
