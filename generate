@@ -35,7 +35,7 @@ end
 
 modify_preseed(ubuntu_release, 'vagrant', 'travis')
 
-replace_all('../bento/scripts/common/vagrant.sh', '../bento/scripts/common/travis.sh', '([ ~])vagrant', '\1travis')
+replace_all('../bento/scripts/ubuntu/vagrant.sh', '../bento/scripts/ubuntu/travis.sh', '([ ~])vagrant', '\1travis')
 replace_all('../bento/scripts/common/vmtools.sh', '../bento/scripts/common/vmtools-travis.sh', 'vagrant', 'travis')
 
 ## Note that transformation is strictly textual.
