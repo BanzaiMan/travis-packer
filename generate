@@ -45,6 +45,7 @@ replace_all("../bento/ubuntu-#{ubuntu_release}-amd64.json", input_file,
   "(get_hostname=|echo '|ssh_(password|username)\": \"|common/)vagrant", '\1travis',           # user name, password and hostname
   "provisionerless",                                                     "latest",             # Chef version
   "vmtools\.sh",                                                         "vmtools-travis.sh",  # VMWare tools file
+  "vagrant\.sh",                                                         "travis.sh",          # default user setup file
   "preseed.cfg",                                                         "preseed-travis.cfg", # Ubuntu preseed config
   "\"384\"",                                                             "\"2048\"",           # memory usage
   "^(\s*)(\"numvcpus\": )?\"1\"",                                        '\1\2"2"',            # VCPU setting
